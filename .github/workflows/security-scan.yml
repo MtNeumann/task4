@@ -1,0 +1,35 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ "task4-roboczy" ]
+  pull_request:
+    branches: [ "task4-roboczy" ]
+
+jobs:
+  security-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t myapp:latest .
+
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@v0.10.0
+        with:
+          image-ref: 'myapp:latest'
+          vuln-type: 'os,library'
+          format: 'table'
+          exit-code: 1
+         
+      - name: Install Semgrep
+        run: |
+          sudo pip install semgrep
+
+      - name: Run Semgrep SAST
+        run: |
+          semgrep --config p/security-audit --error --json .
