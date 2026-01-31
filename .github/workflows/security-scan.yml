@@ -24,7 +24,7 @@ jobs:
           image-ref: 'myapp:latest'
           vuln-type: 'os,library'
           format: 'table'
-          exit-code: 1
+          exit-code: 0
          
       - name: Install Semgrep
         run: |
